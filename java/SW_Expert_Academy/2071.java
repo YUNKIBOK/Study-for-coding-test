@@ -8,15 +8,14 @@ class Solution
 		System.setIn(new FileInputStream("res/input.txt"));
 		
 		Scanner sc = new Scanner(System.in);
-		String T;
-		T=sc.nextLine();
-        char[] nums = T.toCharArray();
-
-        int sum = 0;
-		for(char num: nums) {
-            sum += (num - '0');
-        }
-        System.out.print(sum);
-        sc.close();
+		int testCaseCount = sc.nextInt();
+		
+		for(int i = 0; i<testCaseCount; i++) {
+			int sum = 0;
+			for(int j=0; j<10; j++) {
+				sum += sc.nextInt();
+			}
+			System.out.println("#"+(i+1)+" "+Math.round(sum/10.0));
+		}
 	}
 }
