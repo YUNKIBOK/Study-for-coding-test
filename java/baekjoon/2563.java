@@ -1,40 +1,44 @@
-
-/*
- * 색종이가 붙여진 위치를 표시하고 개수를 센다.
- */
-
 import java.io.BufferedReader;
-//import java.io.FileInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main {
-	public static void main(String args[]) throws IOException {
-//		System.setIn(new FileInputStream("res/input.txt"));
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+/*
+ * 도화지에 최대 100장의 색종이를 붙이는 시뮬레이션을 한다
+ * false는 흰색 도화지를, true는 검은색 색종이가 붙은 영역을 의미한다
+ * 색종이를 붙이면서 true의 개수를 센다
+ */
 
-		int N = Integer.parseInt(br.readLine());
-		int[][] map = new int[100][100];
-		for (int n = 0; n < N; n++) {
-			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-			int col = Integer.parseInt(st.nextToken());
-			int row = Integer.parseInt(st.nextToken());
-			for (int r = row; r < row + 10; r++) {
-				for (int c = col; c < col + 10; c++) {
-					map[r][c] = 1;
+public class Main {
+
+	public static void main(String[] args) throws Exception {
+//		System.setIn(new FileInputStream("res/input.txt"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		boolean[][] isBlack = new boolean[100][100];
+
+		int count = 0;
+		int N = Integer.parseInt(in.readLine());
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(in.readLine(), " ");
+			int startRow = Integer.parseInt(st.nextToken());
+			int startCol = Integer.parseInt(st.nextToken());
+			// 색종이 붙이기
+			for (int p = startRow; p < startRow + 10; p++) {
+				for (int q = startCol; q < startCol + 10; q++) {
+					if (isBlack[p][q] == false) {
+						isBlack[p][q] = true;
+						count += 1;
+					}
 				}
 			}
+		}
 
-		}
-		
-		int count = 0;
-		for (int r = 0; r < 100; r++) {
-			for (int c = 0; c < 100; c++) {
-				if (map[r][c] == 1)
-					count++;
-			}
-		}
 		System.out.println(count);
 	}
+
 }
