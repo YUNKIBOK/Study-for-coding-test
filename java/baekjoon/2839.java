@@ -1,33 +1,41 @@
-
-/*
- * 1. 다이나믹 프로그래밍을 이용한다.
- * 2. N킬로그램은 N - 3킬로그램의 봉지 수  + 1과 N - 5킬로그램의 봉지수  + 1중 더 적은 봉지를 가져가면 된다.
- */
-
-import java.io.IOException;
 import java.util.Scanner;
 
+/*
+ * 무거운 봉지를 최대한 많이 가져가야 전체 가져가는 봉지 개수를 줄일 수 있다
+ * 5로 나눈 몫만큼 5kg을 가져가고
+ * 5로 나눈 나머지를 3으로 나눈 몫만큼 3kg을 가져가면 배달하는 최소 개수이다
+ * 3으로 나눈 나머지가 0이 아니면 Nkg을 만들 수 없다는 것이다
+ * -------------------------------------------------------------------------
+ * 위 방법은 6kg와 같은 경우 3kg 두개로 만들 수 있는데 만들 수 없다고 나온다
+ * DP를 사용하는 새 방법을 사용하기로 했다
+ */
+
 public class Main {
-	public static void main(String args[]) {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
 
-		// 킬로그램 배달하는 봉지의 최소 개수 초기화
-		int[] counts = new int[N + 1];
-		for (int i = 0; i < N + 1; i++) {
-			counts[i] = Integer.MAX_VALUE;
-		}
-		counts[3] = 1;
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		int N = in.nextInt();
+		int[] bagCount = new int[N + 1];
+
+		bagCount[3] = 1;
 		if (N >= 5)
-			counts[5] = 1;
+			bagCount[5] = 1;
 
-		// 다이나믹 프로그래밍
 		for (int i = 6; i <= N; i++) {
-			int use3 = counts[i - 3] == Integer.MAX_VALUE ? Integer.MAX_VALUE : counts[i - 3] + 1;
-			int use5 = counts[i - 5] == Integer.MAX_VALUE ? Integer.MAX_VALUE : counts[i - 5] + 1;
-			counts[i] = Math.min(use3, use5);
+			int using3 = bagCount[i - 3] != 0 ? bagCount[i - 3] : Integer.MAX_VALUE;
+			int using5 = bagCount[i - 5] != 0 ? bagCount[i - 5] : Integer.MAX_VALUE;
+
+			if (Math.min(using3, using5) == Integer.MAX_VALUE) {
+				bagCount[i] = Integer.MAX_VALUE;
+			} else {
+				bagCount[i] = Math.min(using3, using5) + 1;
+			}
 		}
 
-		System.out.println(counts[N] == Integer.MAX_VALUE ? -1 : counts[N]);
+		if (bagCount[N] == Integer.MAX_VALUE || bagCount[N] == 0)
+			System.out.println(-1);
+		else
+			System.out.println(bagCount[N]);
 	}
+
 }
