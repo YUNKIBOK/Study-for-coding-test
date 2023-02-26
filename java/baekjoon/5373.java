@@ -20,9 +20,9 @@ public class Main {
 
 	// 6면을 저장하는 배열
 	// 하단과 같은 전개도 모양으로 저장한다
-	// U
+	//   U
 	// L F R B
-	// D
+	//   D
 	static char[][] upSide;
 	static char[][] downSide;
 	static char[][] frontSide;
