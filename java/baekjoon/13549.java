@@ -1,66 +1,89 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-/*
- * 수빈이가 동생보다 앞 서 있는 경우는 뒤로 걸어가는 것을 반복해야 하므로 거리 차이를 반환한다
- * 그렇지 않은 경우에는 순간 이동을 하는 것부터 BFS를 수행한다
- * 순간 이동은 먼 거리를 이동할 수 있지만 시간이 소비되지 않으므로 다른 이동보다 먼저 수행해야 최적의 시간을 구할 수 있다
- */
 public class Main {
+
+	static BufferedReader br;
+	static StringTokenizer st;
+	static int N, K;
+	static boolean[] isVisited;
+	static Queue<Position> queue;
+	static int[] time;
 
 	public static void main(String[] args) throws Exception {
 //		System.setIn(new FileInputStream("res/input.txt"));
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(in.readLine(), " ");
-		int N = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
+		br = new BufferedReader(new InputStreamReader(System.in));
+		st = new StringTokenizer(br.readLine());
 
-		// 수빈이가 동생보다 앞 선 경우
-		if (N >= K) {
-			System.out.println(N - K);
-			System.exit(0);
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		isVisited = new boolean[10_0000 + 1];
+		time = new int[100_000 + 1];
+		for (int i = 0; i <= 100_000; i++) {
+			time[i] = 100_000;
 		}
+		queue = new PriorityQueue<>();
 
-		bfs(N, K);
-	}
+		queue.add(new Position(0, N));
+		isVisited[N] = true;
+		time[N] = 0;
 
-	static void bfs(int start, int K) {
-		ArrayDeque<Integer> queue = new ArrayDeque();
-		boolean[] isVisited = new boolean[100_000 + 1];
-		isVisited[start] = true;
-		queue.add(start);
+		while (!queue.isEmpty()) {
+//			System.out.println(queue.toString());
 
-		int second = 0;
+			Position current = queue.poll();
+//			if (current.value == K) {
+//				System.out.println(current.time);
+//				System.exit(0);
+//			}
 
-		while (queue.size() > 0) {
-			int size = queue.size();
-			while (size-- > 0) {
-				int current = queue.poll();
-				// 동생을 찾은 경우
-				if (current == K) {
-					System.out.println(second);
-					System.exit(0);
-				}
-				// 순간 이동 하는 경우
-				if (current * 2 <= 100_000 && isVisited[current * 2] == false) {
-					queue.addFirst(current * 2);
-					isVisited[current * 2] = true;
-					size++; // 시간 흐름 없이 바로 탐색할 수 있게 한다
-				}
-				// 앞으로 걸어가는 경우
-				if (current + 1 <= 100_000 && isVisited[current + 1] == false) {
-					queue.add(current + 1);
-					isVisited[current + 1] = true;
-				}
-				// 뒤로 걸어가는 경우
-				if (current - 1 >= 0 && isVisited[current - 1] == false) {
-					queue.add(current - 1);
-					isVisited[current - 1] = true;
-				}
+			if (current.value * 2 <= 100_000 // && isVisited[current.value * 2] == false
+					&& time[current.value * 2] > current.time) {
+//				isVisited[current.value * 2] = true;
+				time[current.value * 2] = current.time;
+				queue.add(new Position(current.time, current.value * 2));
 			}
-			second++;
+
+			if (current.value + 1 <= 100_000 // && isVisited[current.value + 1] == false
+					&& time[current.value + 1] > current.time + 1) {
+//				isVisited[current.value + 1] = true;
+				time[current.value + 1] = current.time + 1;
+				queue.add(new Position(current.time + 1, current.value + 1));
+			}
+
+			if (current.value - 1 >= 0 // && isVisited[current.value - 1] == false
+					&& time[current.value - 1] > current.time + 1) {
+//				isVisited[current.value - 1] = true;
+				time[current.value - 1] = current.time + 1;
+				queue.add(new Position(current.time + 1, current.value - 1));
+			}
 		}
-		System.out.println(second);
+
+		System.out.println(time[K]);
+	}
+}
+
+class Position implements Comparable<Position> {
+	int time, value;
+
+	public Position(int time, int value) {
+		this.time = time;
+		this.value = value;
 	}
 
+	public String toString() {
+		return "(" + time + "," + value + ")";
+	}
+
+	@Override
+	public int compareTo(Position o) {
+		// TODO Auto-generated method stub
+		if (this.time > o.time) {
+			return 1;
+		} else if (this.time == o.time) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
 }
